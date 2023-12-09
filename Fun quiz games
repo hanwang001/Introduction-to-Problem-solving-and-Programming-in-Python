@@ -1,0 +1,40 @@
+class Question:
+    def __init__(self, text, options, correct_option):
+        self.text = text
+        self.options = options
+        self.correct_option = correct_option
+
+    def is_correct(self, answer):
+        return answer == self.correct_option
+
+
+class Quiz:
+    def __init__(self, questions):
+        self.questions = questions
+        self.score = 0
+
+    def run(self):
+        for i, question in enumerate(self.questions, 1):
+            print(f"Question {i}: {question.text}")
+            for j, option in enumerate(question.options, 1):
+                print(f"{j}. {option}")
+
+            user_answer = input("Your answer (enter the option number): ")
+            if question.is_correct(int(user_answer)):
+                print("Correct!\n")
+                self.score += 1
+            else:
+                print(f"Wrong! The correct answer is {question.correct_option}\n")
+
+        print(f"Quiz completed! Your score: {self.score}/{len(self.questions)}")
+
+
+# Sample questions
+question1 = Question("What is the capital of France?", ["Paris", "Berlin", "London", "Madrid"], 1)
+question2 = Question("Which programming language is this quiz built with?", ["Python", "Java", "JavaScript", "C++"], 1)
+
+# Create a quiz with the sample questions
+quiz = Quiz([question1, question2])
+
+# Run the quiz
+quiz.run()
