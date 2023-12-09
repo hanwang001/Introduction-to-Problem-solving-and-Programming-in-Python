@@ -1,0 +1,80 @@
+import random
+import time
+
+class Question:
+    def __init__(self, text, options, correct_option):
+        self.text = text
+        self.options = options
+        self.correct_option = correct_option
+
+    def is_correct(self, answer):
+        return answer == self.correct_option
+
+
+class Quiz:
+    def __init__(self, questions):
+        self.questions = questions
+        self.score = 0
+
+    def run(self):
+        print("Welcome to the Quiz Game!\n")
+
+        start_time = time.time()
+
+        for i, question in enumerate(self.questions, 1):
+            print(f"Question {i}: {question.text}")
+            for j, option in enumerate(question.options, 1):
+                print(f"{j}. {option}")
+
+            user_answer = input("Your answer (enter the option number): ")
+            if question.is_correct(int(user_answer)):
+                print("Correct!\n")
+                self.score += 1
+            else:
+                print(f"Wrong! The correct answer is {question.correct_option}\n")
+
+        end_time = time.time()
+        elapsed_time = round(end_time - start_time, 2)
+
+        print("Quiz completed!")
+        print(f"Your score: {self.score}/{len(self.questions)}")
+        print(f"Time taken: {elapsed_time} seconds")
+        self.calculate_score(elapsed_time)
+
+    def calculate_score(self, elapsed_time):
+        base_score = 10
+        time_penalty = max(0, (elapsed_time - 20) / 2)  # Penalize for taking more than 20 seconds
+        total_score = max(0, base_score - time_penalty)
+
+        print(f"Time Penalty: {time_penalty} seconds")
+        print(f"Total Score: {total_score}")
+
+
+def load_questions(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    questions = []
+    for line in lines:
+        parts = line.strip().split('|')
+        text = parts[0]
+        options = parts[1].split(',')
+        correct_option = int(parts[2])
+        questions.append(Question(text, options, correct_option))
+
+    return questions
+
+
+if __name__ == "__main__":
+    # Load questions from the file
+    questions_file = 'questions.txt'
+    quiz_questions = load_questions(questions_file)
+
+    # Shuffle the questions for variety
+    random.shuffle(quiz_questions)
+
+    # Create a quiz with the loaded questions
+    quiz = Quiz(quiz_questions)
+
+    # Run the quiz
+    quiz.run()
